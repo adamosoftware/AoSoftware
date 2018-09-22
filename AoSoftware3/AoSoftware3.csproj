@@ -407,6 +407,7 @@
     <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Views\Shared\_NavHeader.cshtml" />
     <Content Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <Content Include="Views\Projects\Ginseng.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
