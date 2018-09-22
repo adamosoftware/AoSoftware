@@ -1,0 +1,29 @@
+﻿@{ 
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+@section head {
+    <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.0/dist/bootstrap-toc.min.css">
+    <style type="text/css">
+        h1, h2, h3 {
+            padding-top:4rem
+        }
+    </style>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <!--toc area-->            
+            <nav id="toc" data-toggle="toc" class="sticky-top pt-5"></nav>
+        </div>
+
+        <div class="col-9">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.0/dist/bootstrap-toc.min.js"></script>    
+}

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace AoSoftware3
+namespace AoSoftware
 {
 	public class BundleConfig
 	{

@@ -1,0 +1,543 @@
+﻿@{
+    ViewData["Title"] = "HistoricProperties";
+}
+
+<h2>HistoricProperties.com</h2>
+
+<p>
+    HistoricProperties.com is a real estate listing service
+    specializing in properties over 50 years old. Started in 1999 by a
+    mother-daughter team, it was a homegrown Classic ASP site. It turns out the
+    daughter part of the team, Marjorie, was my Latin teacher in high school in the
+    late 80s. Since I specialized in Classic ASP for a long time, I helped out once
+    in a while with improvements to her site over several years.
+</p>
+
+<p>
+    Due to schedule conflicts and the fact that I’d moved onto
+    .NET away from Classic ASP, I sort of dropped off Marjorie’s radar for a number
+    of years. But in the summer of 2018, I had time to do a complete rebuild in
+    .NET MVC of HistoricProperties. She’d already partnered with another developer
+    to do a new version in PHP/MySQL. But this was one of those projects that
+    couldn’t get past 90% done. This phenomenon is worth studying in itself – I
+    have found that “90% done” is a very dangerous place for a software project. At
+    90% done, the bugs and incomplete functionality that could remain hidden over
+    the rest of the app’s lifecycle become apparent at the end when they can be
+    really hard to fix due to prior design choices and commitments.
+</p>
+
+<p>
+    I was determined to tackle the hard parts of this app
+    up-front, and to keep the difficulties in view – and there are a few complex features
+    in HistoricProperties. I used my <a href="https://ginseng6.azurewebsites.net/">Ginseng</a> app for task
+    tracking and invoicing and GitHub for maintaining the source code and
+    collaborating with other developers on a few things. I was starting over in
+    ASP.NET MVC 5, using Azure SQL Database as the back end, and Azure blob storage
+    for images. I used <a href="https://github.com/adamosoftware/Postulate.Orm">Postulate.Orm</a>
+    for my data access layer, and <a href="https://github.com/adamosoftware/Postulate.Mvc">Postulate.Mvc</a>
+    for MVC productivity. By this point I’d already started on a Postulate overhaul
+    called <a href="https://github.com/adamosoftware/Postulate.Lite">Postulate.Lite</a>
+    to remove some dependencies and make it easier to use, but my earlier ORM had a
+    more stable tool set. I’ll talk more about Postulate in another post.
+</p>
+
+<p>
+    As of this writing (9/20/18), my Azure implementation of
+    HistoricProperties is <a href="https://historicproperties.azurewebsites.net/">here</a>. We
+    haven’t gone live yet as we’re waiting for our credit card processing API keys
+    to be issued.
+</p>
+
+<h1>Front End</h1>
+
+<p>
+    The PHP incarnation of HistoricProperties was done in the
+    CSS framework <a href="https://foundation.zurb.com/">Foundation</a>.
+    I knew nothing about Foundation, and the default MVC template in Visual Studio
+    uses <a href="https://getbootstrap.com/">Bootstrap</a>
+    instead. So, one of the first things I did was reach out to a front-end
+    developer on Upwork.com <a href="https://www.upwork.com/fl/alexgolovin">Alexey Golovin</a> to help
+    me adapt the Foundation CSS to Bootstrap. This was an ongoing thing throughout
+    the project as there are lots of subtleties about modern CSS that I don’t have
+    a lot of patience for or knowledge about. For example, I needed some drag-and-drop
+    functionality done in JavaScript – the ability to re-arrange the order of image
+    thumbnails for a real estate listing. This was pretty easy for Alexey, but it
+    would’ve ruined me trying to tackle all the JavaScript and CSS.
+</p>
+
+<h1>ORM/Data Access Layer</h1>
+
+<p>
+    I’m an ORM junkie from way back, with strong opinions about
+    productivity and simplicity in the data access layer. You’ll hear me say this
+    again, but I’m not a fan of Microsoft’s Entity Framework. I’ll have another
+    extended post about my Postulate ORM project. I’ll use this section to talk
+    about how I used Postulate in this project.
+</p>
+
+<h2>Listing Class</h2>
+
+<p>
+    HistoricProperties.com revolves around real estate listings.
+    A <b>listing</b> refers to a single property -- a house or building of some
+    kind. So, I have a <span class=CodeChar>Listing</span> class that does a lot of
+    work in the application.
+</p>
+
+<p><img src="/img/HistoricProperties/image001.png"></p>
+
+<p>
+    A few things to note about this – I’m using Postulate’s 
+        <a href="https://github.com/adamosoftware/Postulate.Orm/wiki/Change-Tracking">change</a>
+   
+    and <a href="https://github.com/adamosoftware/Postulate.Orm/wiki/Delete-Tracking">delete</a>
+    tracking features because I want a full audit log of changes made to a listing.
+    Note also I inherit from a <span class=CodeChar>BaseTable</span> class. This is
+    how I consistently apply user and date stamp columns to all tables that need
+    them. I’m also implementing an interface <span class=CodeChar>IContact</span>.
+    This will be important to solving one of the challenges with this app:
+    presenting listing <a href="#_Contact_Info">
+        contact
+        info
+    </a> in a uniform and flexible way that’s compatible with old data
+    yet allows seamless transition to the new data structure.
+</p>
+
+<p>
+    Postulate offers validation and event handling that make MVC
+    actions simpler. I’ll touch on these briefly.
+</p>
+
+<p>
+    To implement server-side validation of listing records, I
+    use the <a href="https://github.com/adamosoftware/Postulate.Orm/blob/master/Core/Abstract/Record.cs#L64">GetValidationErrors</a>
+    override. Any error messages generated by a save attempt are displayed in a Bootstrap
+    alert div.
+</p>
+
+<p><img src="/img/HistoricProperties/image002.png"></p>
+
+<p>
+    Postulate doesn’t have navigation properties in exactly the same
+    way EF does, but my approach accomplishes the same thing. It has a <a href="https://github.com/adamosoftware/Postulate.Orm/blob/master/Core/Abstract/Record.cs#L108">BeforeView</a>
+    override that lets you lookup records related to foreign keys.
+</p>
+
+<p><img src="/img/HistoricProperties/image003.png"></p>
+
+<h2>Crud conventions</h2>
+
+<p>
+    I’m pretty ruthless about maintaining code simplicity, and
+    low-level database Create, Read, Update, and Delete methods are no exception.
+    Here’s the Save action that’s called when you’re creating or editing a listing.
+</p>
+
+<p>
+    What’s a little unusual about this here is that I turn off
+    input validation. This is so I can accept HTML markup in the listing
+    Description field. An alternative would be to use <span class=CodeChar>[AllowHtml]</span>
+    on the <span class=CodeChar>Listing.Description</span> property. I didn’t do
+    this because it would add an MVC dependency to the model layer, and I was
+    philosophically opposed to that. To mitigate the cross-site scripting attack
+    risk of not validating input, I use an HTML sanitizer to strip potentially
+    malicious tags.
+</p>
+
+<p><img src="/img/HistoricProperties/image004.png"></p>
+
+<p>
+    The <span class=CodeChar>actionName</span> argument is set
+    to “Create” or “Edit” and indicates where to redirect in case of an error.
+</p>
+
+<p>
+    The <a href="https://github.com/adamosoftware/Postulate.Mvc/blob/master/Postulate.Mvc/ControllerBase.cs#L150">SaveRecord</a>
+    call is provided by Postulate.Mvc, and is my standard way of saving any
+    database record from any web form. This encapsulates the relevant error
+    handling, database connection management, validation, and events at the model
+    level.
+</p>
+
+<p>
+    The <span class=CodeChar>NotifyOnSave</span> call sends an
+    email to site administrators to notify them that a listing was changed and
+    needs to be reviewed.
+</p>
+
+<h2>Migrating old data</h2>
+
+<p>
+    The Classic ASP site used MS Access 97 as the backend
+    database. It’s pretty fortunate that I still had a copy of Access 2003, which
+    reads the Access 97 format. But that wasn’t the main challenge migrating the
+    data, though. The real challenge was that the Access table structure didn’t have
+    any concept of user accounts (apart from admin access). Marjorie and her mom
+    did all data maintenance themselves on behalf of users via email. End users only
+    viewed data, they didn’t make changes. Images had to be emailed – there was no
+    upload feature. The contact info associated with a listing might contain a mix
+    of things – comma-separated emails, phone numbers, names, and mailing addresses.
+    But these didn’t tie back in a straightforward way to a single user account.
+</p>
+
+<p>
+    I approached this by creating a low-level import service
+    class called <span class=CodeChar>SqlDataLoader</span>. This accepts a <span class=CodeChar>DataTable</span>, some info about the target SQL Server table, and
+    column mappings between the source data and destination table. It’s initialized
+    like a dictionary. A simple usage looks like this:
+</p>
+
+<p><img src="/img/HistoricProperties/image005.png"></p>
+
+<p>
+    Why didn’t I use SQL Server Integration Services? It’s because
+    I’ve never had a good experience with Integration Services. It’s got a very
+    broad feature set that doesn’t go deep enough where I need it – for example I
+    need foreign key mapping and ability to execute arbitrary transforms on incoming
+    data in C# as needed. Integration Services does a bazillion different things,
+    but I never needed a “bazillion” things. I certainly didn’t want to grapple
+    with its GUI in SQL Server Management Studio.
+</p>
+
+<p>
+    Anyway, as I said above, there was no concept of user
+    accounts in the original database. To address that, I built upon the <span class=CodeChar>SqlDataLoader</span> class with a subclass called <span class=CodeChar>UserLoader</span> for creating Asp.Net Identity accounts. I won’t
+    go into the full implementation here, but this is what it looks like to
+    initialize my user account loader:
+</p>
+
+<p><img src="/img/HistoricProperties/image006.png"></p>
+
+<p>
+    The source data had comma-separated email addresses in a
+    single <span class=CodeChar>email_address</span> field. I needed to split those
+    and return the first email to use as the account email. My <span class=CodeChar>SqlDataLoader</span> class already made it possible to do inline
+    transforms like this. But I needed to override some of the base class behaviors
+    to support Asp.Net Identity integration. This is where C# really shines.
+</p>
+
+<p>
+    After creating user accounts, I needed to migrate the actual
+    listings. Here’s part of what the listing data loader looks like. (I cut some of
+    it off to keep it simple here.) You can see the special handling needed for the
+    <span class=CodeChar>UserId</span> column. Since there’s no simple link to the
+    user account table, I have to parse the email addresses, and find a matching
+    user account in the users table.
+</p>
+
+<p><img src="/img/HistoricProperties/image007.png"></p>
+
+<h2>Migrating images to blob storage</h2>
+
+<p>
+    I won’t drill into the entire implementation, but here’s
+    what the MVC action looks like that I used to copy images from the FTP folder
+    of the Classic ASP site to Azure blob storage.
+</p>
+
+<p><img src="/img/HistoricProperties/image008.png"></p>
+
+<h1>Feature Highlights</h1>
+
+<h2><a name="_Contact_Info"></a>Contact Info</h2>
+
+<p>
+    One thing I struggled with in this app was understanding the
+    various ways people relate to listings. If you’re browsing the site, and you
+    see a listing you like, you may want to contact someone to get more info or
+    even initiate a purchase agreement. In addition to several kinds of contact approaches
+    (email, phone, postal mail, and URLs), there are different scenarios in which
+    people and listings are related. For example, the listing advertiser may be the
+    property owner, or the advertiser may be a real estate agent listing on behalf
+    of an owner not shown. Or, the listing contact may be part of an agency that’s
+    listing many different properties that all share the same contact info.
+    Moreover, the agency may have multiple office locations, and we need to target
+    a specific location on a particular listing. It gets even more interesting when
+    the user account associated with a listing is neither the owner nor an agent,
+    but an assistant working for an agent, whose personal contact info is not
+    applicable to listings, but who’s nonetheless the “owner” of the listing for
+    data entry purposes.
+</p>
+
+<p><img src="/img/HistoricProperties/image009.jpg"></p>
+
+<p>
+    So, the challenges here were to a) provide a unified display
+    model that handled all these scenarios seamlessly, and b) afforded the right level
+    of flexibility in the data model without overwhelming the user with choices.
+    Too much flexibility, or flexibility the user doesn’t understand is – as far as
+    I’m concerned – just as bad as a lack of flexibility.
+</p>
+
+<p>
+    It took several iterations to get right, but ultimately I
+    approached the problem in this way:
+</p>
+
+<p>
+    I created an interface <span class=CodeChar>IContact</span> that would serve as
+    the basis of commonality for sources of contact info in the application. <span class=CodeChar>IContact</span> defines name, company name, mailing address, two
+    phone numbers, two emails, two URLs, etc. I applied that interface to several
+    classes in the application: <span class=CodeChar>Listing</span>, <span class=CodeChar>UserProfile</span>, <span class=CodeChar>Agency</span>, <span class=CodeChar>AgencLocation</span>, and <span class=CodeChar>ListingContact</span>.
+    I won’t drill into all specifics but suffice it to say <span class=CodeChar>IContact</span>
+    is used throughout the application to identify sources of info that can all funnel
+    into a listing’s displayed contact info.
+</p>
+
+<p>
+    I added a user profile property that allows individual users to opt in or out of
+    including the contact info from their user account on listings they own. Users
+    who own the properties they’re listing would likely opt into this, agency users
+    might or might not, and agency assistants likely would opt out of this. The
+    user can toggle this setting at any time and see the effect online immediately.
+</p>
+
+<p>
+    I added a method <span class=CodeChar>GetContactInfo</span> on the Listing class
+    that returns all the <span class=CodeChar>IContact</span>s associated with the
+    listing. This evaluates the user’s opt in/out status as well as conditional
+    logic related to the presence of an agency or agency location.<br>
+    <img src="/img/HistoricProperties/image010.png">
+</p>
+
+<p>
+    I created a view model class that funnels all the possible contact info for
+    display, consolidating any duplicate info, and choosing the right Razor
+    template for display. We’ll look at this in a little detail below, but just
+    know that the display model is a dictionary whose key is the display icon you
+    see in the rendered HTML below.<br>
+    <img src="/img/HistoricProperties/image011.png">
+</p>
+
+<p>
+    Let’s look a bit at <span class=CodeChar>ContactInfoView.GetValues</span>
+    method since this is where the real work is done. In the screenshot I’ve faded
+    out some of the code – not to hide anything, but rather just to manage the
+    level of detail. I’m happy to elaborate further on specific questions. Anyway,
+    this is where the contact info is consolidated via the <span class=CodeChar>UniqueNonEmptyStrings</span>
+    and <span class=CodeChar>UniqueNonEmptyItems</span> methods, the icons and Razor
+    templates are indicated.
+</p>
+
+<p><img src="/img/HistoricProperties/image012.png"></p>
+
+<p>
+    The <span class=CodeChar>UniqueNonEmptyStrings</span> method
+    filters and consolidates selected <span class=CodeChar>IContact</span>
+    properties. In the usage above, I’m capturing whatever mix of individual or
+    company names may be associated with the listing. What was challenging here was
+    that these names may be embedded in data with HTML line breaks or they may
+    differ by case only. This method handles those cases and returns a list of the
+    unique names connected with a listing.
+</p>
+
+<p><img src="/img/HistoricProperties/image013.png"></p>
+
+<p>
+    The <span class=CodeChar>UniqueNonEmptyItems</span> method was
+    a little simpler, fortunately. This is used with phone numbers and URLs to ensure
+    that there are no duplicates displayed.
+</p>
+
+<p><img src="/img/HistoricProperties/image014.png"></p>
+
+<h2>Search Subscription</h2>
+
+<p>
+    One important feature that got stuck in the PHP
+    implementation was the ability to subscribe to a search. Let’s say I want to be
+    notified if a listing appears in the northeast US between priced between $300K
+    and $400K. There’s a <b>Notify Me</b> button on the search page for this.
+</p>
+
+<p><img src="/img/HistoricProperties/image015.jpg"></p>
+
+<p>Here’s how I approached this:</p>
+
+<p>
+    I created a table to hold a user’s search and notification preferences called <span class=CodeChar>SearchCriteria</span> which looks like this (excerpt). Note that
+    I use the Postulate <a href="https://github.com/adamosoftware/Postulate.Orm/blob/master/Core/Attributes/WhereAttribute.cs">[Where]</a>
+    attribute to associate a SQL expressions with properties. This will be
+    important when we execute searches automatically on behalf of users later. The
+    same class is used when doing searches interactively as a user normally would
+    when using the site.<br>
+
+    <img src="/img/HistoricProperties/image016.png">
+</p>
+
+<p>
+    I
+    created an MVC action <span class=CodeChar>Search/RunAndSendNotifications</span>
+    that is scheduled to run daily by <a href="https://cron-job.org/en/">cron-job.org</a>.
+    I considered using Azure web jobs, but I find cron-job.org much simpler for
+    cases where all I want is a URL to be called on a schedule. This handles both
+    the search execution and the emailing of results.<br>
+    <img src="/img/HistoricProperties/image017.png">
+</p>
+
+<p>
+    The method <span class=CodeChar>RunSavedSearchesInner</span> looks for listings
+    that have changed since the last set of notifications went out. For each
+    listing, we look to see if it fits anyone’s saved search criteria:<br>
+    <img border=0 width=815 height=149 id="Picture 22"
+         src="/img/HistoricProperties/image018.jpg">
+</p>
+
+<p>
+    The search execution and queuing for email send is handled by a static method <span class=CodeChar>SearchCriteria.ExecuteSubscribedSearches</span>, which looks
+    like this. This method, given a listing id, queries all the active saved searches
+    to see if it matches anyone’s search. If it does, it’s logged in the <span class=CodeChar>SearchResult</span> table. This is later picked up by the email
+    process to render the search result email. <br>
+    <img src="/img/HistoricProperties/image019.jpg">
+</p>
+
+<p>
+    Finally, the <span class=CodeChar>SendNotificationsInner</span> method (from step 2
+    above), handles the actual email sending. This uses its own MVC <span class=CodeChar>HtmlHelper</span> to render the email content, sending search
+    results to each user who has results.<br>
+    <img src="/img/HistoricProperties/image020.jpg">
+</p>
+
+<h2>Region Dropdown</h2>
+
+<p>
+    This may seem like a small thing, but one requirement I had
+    was to show the state abbreviations associated with a geographic region in
+    dropdowns where a region is selected. I didn’t want the states to be hardcoded
+    within the region names. The states and regions are separate tables in the
+    database. I have done stuff like this using XML output and STUFF function tricks
+    in SQL Server. There might be a good way to do this today I’m not aware of, but
+    I’ll show you how I did it.
+</p>
+
+<p><img src="/img/HistoricProperties/image021.png"></p>
+
+<p>
+    First, it helps to know that for most all dropdowns in the
+    app, I use <a href="https://github.com/adamosoftware/Postulate.Mvc/blob/master/Postulate.Mvc/SelectListQuery.cs">Postulate.Mvc.SelectListQuery</a>.
+    This is how I abstract the queries used to fill drop down lists in the
+    application as well as bundle multiple list-filling queries into a single round
+    trip (via <a href="https://github.com/adamosoftware/Postulate.Mvc/blob/master/Postulate.Mvc/ControllerBase.cs#L232">FillSelectLists</a>
+    method).
+</p>
+
+<p>
+    Anyway, the region dropdown is provided by this <span class=CodeChar>RegionSelect</span> class, which looks like this. You can see it
+    has an optional <span class=CodeChar>showStates</span> argument that’s false by
+    default. The real work for injecting state abbreviations into the list items is
+    done by the <span class=CodeChar>OnExecuted</span> override, which I’ll expand
+    in a bit.
+</p>
+
+<p><img src="/img/HistoricProperties/image022.jpg"></p>
+
+<p>
+    The <span class=CodeChar>OnExecuted</span> override looks
+    like this. It queries all the states in the database, grouping them into an <span class=CodeChar>ILookup</span> structure. This effectively divides the list of
+    all states into separate lists by a grouping field, in this case the <span class=CodeChar>RegionId</span>. Then, I loop through the regions that are
+    prepped for display (the <span class=CodeChar>sourceItems</span> argument),
+    returning a new <span class=CodeChar>SelectListItem</span> that concatenates
+    the state abbreviations for that region. Thus, there’s very little additional
+    query overhead, and the states are not hardcoded into the region names.
+</p>
+
+<p><img src="/img/HistoricProperties/image023.png"></p>
+
+<h2>Facebook Sharing</h2>
+
+<p>
+    The social media sharing features are supported by <a href="http://js-socials.com/">jsSocials</a> which Alexey implemented for me.
+</p>
+
+<p>
+    <img border=0 width=344 height=158 id="Picture 28"
+         src="/img/HistoricProperties/image024.png">
+</p>
+
+<p>
+    I love this way this works, but Facebook sharing turned out
+    to have some unexpected complications that required some backend changes. Understandably,
+    Facebook (and the other sites I’m sure) require some metadata to share content
+    effectively. This is done with <a href="http://ogp.me/">Open Graph protocol</a>
+    meta tags. This is what these properties look like in my Razor view:
+</p>
+
+<p><img src="/img/HistoricProperties/image025.png"></p>
+
+<p>
+    What was tricky here had to do with images. When sharing a
+    URL for the first time, Facebook won’t display its related image unless it’s
+    been pre-cached by their crawler or you supply the image dimensions in the <span class=CodeChar>og:image:width</span> and <span class=CodeChar>og:image:height</span>
+    properties. I wasn’t capturing the image dimensions in my upload process.
+</p>
+
+<p>
+    I tried setting the meta tag content in JavaScript on
+    document ready. Image dimensions are easy to retrieve on the client side where
+    image width and height properties are DOM native. However, client-side script is
+    not executed by Facebook’s crawler. (This made sense after I tried it and it
+    didn’t work.) I knew I had to get the image dimensions in my controller code
+    and pass it as part of the model to the view.
+</p>
+
+<p>
+    Fortunately, I was already using an open-source component to
+    do some work with images during uploads: <a href="http://imageprocessor.org/imageprocessor/imagefactory/">ImageFactory</a>.
+    This library does quite a lot, and frankly is a bit intimidating – in spite of
+    the obvious loving-care that’s gone into it.. I was not very thrilled about
+    having to dig dipper into it beyond what I already head working. (I’m using its
+    Autorotate feature to fix certain orientation issues in uploaded images.) But I
+    knew it was going to be the way to get the image dimensions at the server level.
+</p>
+
+<p>
+    I ended up doing this with a static method <span class=CodeChar>SaveImageDimensions</span> which looks like this. All it does is
+    query the image dimensions of an <span class=CodeChar>ImageFactory’s</span>
+    currently loaded image and save them in the database. Since an image’s
+    dimensions won’t change, it’s efficient to store them in the database.
+</p>
+
+<p><img src="/img/HistoricProperties/image026.png"></p>
+
+<p>
+    This method is called in two places – now as part of the
+    regular upload process and also whenever a listing is viewed if no dimensions
+    are found for the listing’s main image. I had considered backfilling all the
+    image dimensions with a new admin management process, but I felt it was good
+    enough to run this one image at a time on demand. It’s guaranteed to run only
+    once per listing, so I saw no harm in running on demand in that way.
+</p>
+
+<p>
+    This is what it looks like in the context of the Listing/View
+    action. If the thumbnail dimensions are missing when the listing is viewed,
+    then a new ImageFactory is created, and a web request is created from blob
+    storage
+</p>
+
+<p><img src="/img/HistoricProperties/image027.png"></p>
+
+<h2>Processing Credit Cards</h2>
+
+<p>
+    This app requires credit card processing. This is provided
+    by <a href="https://developer.heartlandpaymentsystems.com/SecureSubmit">Heartland Secure Submit SDK</a>.
+</p>
+
+<p>
+    I had some help on this from a developer I work with sometimes who goes by the 
+    name <a href="https://www.freelancer.com/u/lovelyrosejoseph">Lovely Joseph</a>.
+    I highly recommend him for .NET work. He implemented the hard parts of the GitHub
+    integration on <a href="https://ginseng6.azurewebsites.net/">Ginseng</a>. He did the 
+    payment controller logic for Historic Properties using the Secure Submit SDK.
+</p>
+
+<h2>Browser testing with Ghost Inspector</h2>
+
+<p>
+    Although I lost the discipline for it as the project
+    continued and stabilized, I used the <a href="https://ghostinspector.com/">Ghost Inspector
+    </a> to record and playback a few simple actions on the site – login and
+    listing creation in particular. Using their Chrome extension, it’s really easy
+    to record a sequence of actions and play them back against a live or test site.
+</p>

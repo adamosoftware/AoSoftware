@@ -12,8 +12,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AoSoftware3</RootNamespace>
-    <AssemblyName>AoSoftware3</AssemblyName>
+    <RootNamespace>AoSoftware</RootNamespace>
+    <AssemblyName>AoSoftware</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -45,10 +45,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JsonSettings, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AoJsonSettings.1.0.5\lib\net461\JsonSettings.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -99,9 +106,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.4\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
@@ -147,10 +151,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Classes\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +165,183 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\custom.css" />
+    <Content Include="Content\css\entypo.css" />
+    <Content Include="Content\css\site.css" />
+    <Content Include="Content\css\site.min.css" />
+    <Content Include="Content\css\socicon.css" />
+    <Content Include="Content\css\theme.css" />
+    <Content Include="Content\fonts\entypo.svg" />
+    <Content Include="Content\fonts\socicon.svg" />
+    <Content Include="Content\img\content\ginseng.png" />
+    <Content Include="Content\img\content\postulate.png" />
+    <Content Include="Content\img\content\sql-model-merge.png" />
+    <Content Include="Content\img\graphic-bg-city.svg" />
+    <Content Include="Content\img\graphic-bg-clouds-white.svg" />
+    <Content Include="Content\img\graphic-bike.svg" />
+    <Content Include="Content\img\graphic-desktop.svg" />
+    <Content Include="Content\img\graphic-developer-group.svg" />
+    <Content Include="Content\img\graphic-devices.svg" />
+    <Content Include="Content\img\graphic-envelope.svg" />
+    <Content Include="Content\img\graphic-fingerprint.svg" />
+    <Content Include="Content\img\graphic-golden-gate-bridge.svg" />
+    <Content Include="Content\img\graphic-imac-interface.svg" />
+    <Content Include="Content\img\graphic-laptop.svg" />
+    <Content Include="Content\img\graphic-man-box.svg" />
+    <Content Include="Content\img\graphic-man-computer.svg" />
+    <Content Include="Content\img\graphic-phone-actions.svg" />
+    <Content Include="Content\img\graphic-photos.svg" />
+    <Content Include="Content\img\graphic-woman-phone.svg" />
+    <Content Include="Content\img\graphic-woman-writing-2.svg" />
+    <Content Include="Content\img\graphic-woman-writing.svg" />
+    <Content Include="Content\img\HistoricProperties\image001.png" />
+    <Content Include="Content\img\HistoricProperties\image002.png" />
+    <Content Include="Content\img\HistoricProperties\image003.png" />
+    <Content Include="Content\img\HistoricProperties\image004.png" />
+    <Content Include="Content\img\HistoricProperties\image005.png" />
+    <Content Include="Content\img\HistoricProperties\image006.png" />
+    <Content Include="Content\img\HistoricProperties\image007.png" />
+    <Content Include="Content\img\HistoricProperties\image008.png" />
+    <Content Include="Content\img\HistoricProperties\image009.jpg" />
+    <Content Include="Content\img\HistoricProperties\image010.png" />
+    <Content Include="Content\img\HistoricProperties\image011.png" />
+    <Content Include="Content\img\HistoricProperties\image012.png" />
+    <Content Include="Content\img\HistoricProperties\image013.png" />
+    <Content Include="Content\img\HistoricProperties\image014.png" />
+    <Content Include="Content\img\HistoricProperties\image015.jpg" />
+    <Content Include="Content\img\HistoricProperties\image016.png" />
+    <Content Include="Content\img\HistoricProperties\image017.png" />
+    <Content Include="Content\img\HistoricProperties\image018.jpg" />
+    <Content Include="Content\img\HistoricProperties\image019.jpg" />
+    <Content Include="Content\img\HistoricProperties\image020.jpg" />
+    <Content Include="Content\img\HistoricProperties\image021.png" />
+    <Content Include="Content\img\HistoricProperties\image022.jpg" />
+    <Content Include="Content\img\HistoricProperties\image023.png" />
+    <Content Include="Content\img\HistoricProperties\image024.png" />
+    <Content Include="Content\img\HistoricProperties\image025.png" />
+    <Content Include="Content\img\HistoricProperties\image026.png" />
+    <Content Include="Content\img\HistoricProperties\image027.png" />
+    <Content Include="Content\img\logo-bench.svg" />
+    <Content Include="Content\img\logo-dark-gray.svg" />
+    <Content Include="Content\img\logo-dropbox.svg" />
+    <Content Include="Content\img\logo-facebook.svg" />
+    <Content Include="Content\img\logo-google.svg" />
+    <Content Include="Content\img\logo-gray.svg" />
+    <Content Include="Content\img\logo-instagram.svg" />
+    <Content Include="Content\img\logo-movend.svg" />
+    <Content Include="Content\img\logo-payment-amex.svg" />
+    <Content Include="Content\img\logo-payment-visa.svg" />
+    <Content Include="Content\img\logo-pitstop.svg" />
+    <Content Include="Content\img\logo-sketch.svg" />
+    <Content Include="Content\img\logo-slack.svg" />
+    <Content Include="Content\img\logo-snapchat.svg" />
+    <Content Include="Content\img\logo-soundcloud.svg" />
+    <Content Include="Content\img\logo-spotify.svg" />
+    <Content Include="Content\img\logo-w-gradient.svg" />
+    <Content Include="Content\img\logo-w-white.svg" />
+    <Content Include="Content\img\logo-white.svg" />
+    <Content Include="Content\img\overview\app-account-create-alternative.jpg" />
+    <Content Include="Content\img\overview\app-account-create.jpg" />
+    <Content Include="Content\img\overview\app-account-login.jpg" />
+    <Content Include="Content\img\overview\app-account-reset-password.jpg" />
+    <Content Include="Content\img\overview\app-account-settings-hero.jpg" />
+    <Content Include="Content\img\overview\app-account-settings.jpg" />
+    <Content Include="Content\img\overview\app-chat.jpg" />
+    <Content Include="Content\img\overview\app-collection-cards.jpg" />
+    <Content Include="Content\img\overview\app-collection-empty-state.jpg" />
+    <Content Include="Content\img\overview\app-collection-list-hero.jpg" />
+    <Content Include="Content\img\overview\app-collection-list.jpg" />
+    <Content Include="Content\img\overview\app-collection-people.jpg" />
+    <Content Include="Content\img\overview\app-collection-table-alternative.jpg" />
+    <Content Include="Content\img\overview\app-collection-table.jpg" />
+    <Content Include="Content\img\overview\app-discussion-list-hero.jpg" />
+    <Content Include="Content\img\overview\app-discussion-list.jpg" />
+    <Content Include="Content\img\overview\app-discussion-thread.jpg" />
+    <Content Include="Content\img\overview\app-docs-article.jpg" />
+    <Content Include="Content\img\overview\app-docs-landing-hero.jpg" />
+    <Content Include="Content\img\overview\app-docs-landing.jpg" />
+    <Content Include="Content\img\overview\app-invoice.jpg" />
+    <Content Include="Content\img\overview\app-item-detail-alternative-1.jpg" />
+    <Content Include="Content\img\overview\app-item-detail-alternative-2.jpg" />
+    <Content Include="Content\img\overview\app-item-detail.jpg" />
+    <Content Include="Content\img\overview\app-profile-creator-alternative.jpg" />
+    <Content Include="Content\img\overview\app-profile-creator.jpg" />
+    <Content Include="Content\img\overview\app-profile-public.jpg" />
+    <Content Include="Content\img\overview\app-profile-social-hero.jpg" />
+    <Content Include="Content\img\overview\app-profile-social.jpg" />
+    <Content Include="Content\img\overview\app-project-detail-hero.jpg" />
+    <Content Include="Content\img\overview\app-project-detail.jpg" />
+    <Content Include="Content\img\overview\app-project-list.jpg" />
+    <Content Include="Content\img\overview\app-wizard-onboarding-alternative.jpg" />
+    <Content Include="Content\img\overview\app-wizard-onboarding.jpg" />
+    <Content Include="Content\img\overview\blog-grid-hero.jpg" />
+    <Content Include="Content\img\overview\blog-grid.jpg" />
+    <Content Include="Content\img\overview\blog-single.jpg" />
+    <Content Include="Content\img\overview\career-single.jpg" />
+    <Content Include="Content\img\overview\careers.jpg" />
+    <Content Include="Content\img\overview\case-studies.jpg" />
+    <Content Include="Content\img\overview\case-study-single.jpg" />
+    <Content Include="Content\img\overview\company-detailed.jpg" />
+    <Content Include="Content\img\overview\company-simple-hero.jpg" />
+    <Content Include="Content\img\overview\company-simple.jpg" />
+    <Content Include="Content\img\overview\docs-article.jpg" />
+    <Content Include="Content\img\overview\docs.jpg" />
+    <Content Include="Content\img\overview\index.jpg" />
+    <Content Include="Content\img\overview\item-detail-alternative-2.jpg" />
+    <Content Include="Content\img\overview\landing-1-hero.jpg" />
+    <Content Include="Content\img\overview\landing-1.jpg" />
+    <Content Include="Content\img\overview\landing-2-hero.jpg" />
+    <Content Include="Content\img\overview\landing-2.jpg" />
+    <Content Include="Content\img\overview\landing-3.jpg" />
+    <Content Include="Content\img\overview\landing-4.jpg" />
+    <Content Include="Content\img\overview\landing-5.jpg" />
+    <Content Include="Content\img\overview\landing-6.jpg" />
+    <Content Include="Content\img\overview\landing-7.jpg" />
+    <Content Include="Content\img\overview\landing-8-hero.jpg" />
+    <Content Include="Content\img\overview\landing-8.jpg" />
+    <Content Include="Content\img\overview\landing-9-hero.jpg" />
+    <Content Include="Content\img\overview\landing-9.jpg" />
+    <Content Include="Content\img\overview\landing-coming-soon-1.jpg" />
+    <Content Include="Content\img\overview\landing-coming-soon-2.jpg" />
+    <Content Include="Content\img\overview\pricing-compare.jpg" />
+    <Content Include="Content\img\overview\pricing-simple.jpg" />
+    <Content Include="Content\img\overview\pricing-tabbed.jpg" />
+    <Content Include="Content\img\social-share-facebook.svg" />
+    <Content Include="Content\img\social-share-linkedin.svg" />
+    <Content Include="Content\img\social-share-pocket.svg" />
+    <Content Include="Content\img\social-share-twitter.svg" />
+    <Content Include="Content\js\bootstrap.js" />
+    <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\flickity.pkgd.min.js" />
+    <Content Include="Content\js\jquery.min.js" />
+    <Content Include="Content\js\jquery.smartWizard.min.js" />
+    <Content Include="Content\js\popper.min.js" />
+    <Content Include="Content\js\prism.js" />
+    <Content Include="Content\js\scrollMonitor.js" />
+    <Content Include="Content\js\site.js" />
+    <Content Include="Content\js\site.min.js" />
+    <Content Include="Content\js\smooth-scroll.polyfills.js" />
+    <Content Include="Content\js\theme.js" />
+    <Content Include="Content\js\theme.min.js" />
+    <Content Include="Content\js\zoom.min.js" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap-theme.css" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap-theme.min.css" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap.css" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap.min.css" />
+    <Content Include="Content\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\lib\bootstrap\dist\js\bootstrap.js" />
+    <Content Include="Content\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <Content Include="Content\lib\bootstrap\dist\js\npm.js" />
+    <Content Include="Content\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <Content Include="Content\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Content\lib\jquery-validation-unobtrusive\LICENSE.txt" />
+    <Content Include="Content\lib\jquery-validation\dist\additional-methods.js" />
+    <Content Include="Content\lib\jquery-validation\dist\additional-methods.min.js" />
+    <Content Include="Content\lib\jquery-validation\dist\jquery.validate.js" />
+    <Content Include="Content\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <Content Include="Content\lib\jquery\dist\jquery.js" />
+    <Content Include="Content\lib\jquery\dist\jquery.min.js" />
+    <Content Include="Content\lib\jquery\LICENSE.txt" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -167,6 +351,30 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\projects.json" />
+    <Content Include="Content\css\theme.css.map" />
+    <Content Include="Content\fonts\entypo.eot" />
+    <Content Include="Content\fonts\entypo.ttf" />
+    <Content Include="Content\fonts\entypo.woff" />
+    <Content Include="Content\fonts\entypo.woff2" />
+    <Content Include="Content\fonts\socicon.eot" />
+    <Content Include="Content\fonts\socicon.ttf" />
+    <Content Include="Content\fonts\socicon.woff" />
+    <Content Include="Content\lib\bootstrap\.bower.json" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap-theme.min.css.map" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <Content Include="Content\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <Content Include="Content\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\lib\bootstrap\LICENSE" />
+    <Content Include="Content\lib\jquery-validation-unobtrusive\.bower.json" />
+    <Content Include="Content\lib\jquery-validation\.bower.json" />
+    <Content Include="Content\lib\jquery-validation\LICENSE.md" />
+    <Content Include="Content\lib\jquery\.bower.json" />
+    <Content Include="Content\lib\jquery\dist\jquery.min.map" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -192,10 +400,16 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Projects\HistoricProperties.cshtml" />
+    <Content Include="Views\Projects\_Layout.cshtml" />
+    <Content Include="Views\Projects\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_CookieConsentPartial.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_NavHeader.cshtml" />
+    <Content Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace AoSoftware3
+namespace AoSoftware
 {
 	public class FilterConfig
 	{
