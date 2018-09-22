@@ -11,11 +11,11 @@
     <title>@ViewData["Title"] - AoSoftware</title>
 </head>
 <body data-spy="scroll" data-target="#toc">
-    <partial name="_NavHeader"/>    
+    @Html.Partial("_NavHeader")
 
     <div class="main-container">
         @RenderBody()        
-        <partial name="_Footer"/>
+        @Html.Partial("_Footer")
     </div>
 
     <script type="text/javascript" src="~/Content/js/jquery.min.js"></script>

@@ -84,7 +84,7 @@
     work in the application.
 </p>
 
-<p><img src="/img/HistoricProperties/image001.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image001.png"></p>
 
 <p>
     A few things to note about this – I’m using Postulate’s 
@@ -115,7 +115,7 @@
     alert div.
 </p>
 
-<p><img src="/img/HistoricProperties/image002.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image002.png"></p>
 
 <p>
     Postulate doesn’t have navigation properties in exactly the same
@@ -123,7 +123,7 @@
     override that lets you lookup records related to foreign keys.
 </p>
 
-<p><img src="/img/HistoricProperties/image003.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image003.png"></p>
 
 <h2>Crud conventions</h2>
 
@@ -144,7 +144,7 @@
     malicious tags.
 </p>
 
-<p><img src="/img/HistoricProperties/image004.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image004.png"></p>
 
 <p>
     The <span class=CodeChar>actionName</span> argument is set
@@ -187,7 +187,7 @@
     like a dictionary. A simple usage looks like this:
 </p>
 
-<p><img src="/img/HistoricProperties/image005.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image005.png"></p>
 
 <p>
     Why didn’t I use SQL Server Integration Services? It’s because
@@ -206,7 +206,7 @@
     initialize my user account loader:
 </p>
 
-<p><img src="/img/HistoricProperties/image006.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image006.png"></p>
 
 <p>
     The source data had comma-separated email addresses in a
@@ -225,7 +225,7 @@
     user account in the users table.
 </p>
 
-<p><img src="/img/HistoricProperties/image007.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image007.png"></p>
 
 <h2>Migrating images to blob storage</h2>
 
@@ -235,7 +235,7 @@
     of the Classic ASP site to Azure blob storage.
 </p>
 
-<p><img src="/img/HistoricProperties/image008.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image008.png"></p>
 
 <h1>Feature Highlights</h1>
 
@@ -259,7 +259,7 @@
     data entry purposes.
 </p>
 
-<p><img src="/img/HistoricProperties/image009.jpg"></p>
+<p><img src="~/Content/img/HistoricProperties/image009.jpg"></p>
 
 <p>
     So, the challenges here were to a) provide a unified display
@@ -297,7 +297,7 @@
     that returns all the <span class=CodeChar>IContact</span>s associated with the
     listing. This evaluates the user’s opt in/out status as well as conditional
     logic related to the presence of an agency or agency location.<br>
-    <img src="/img/HistoricProperties/image010.png">
+    <img src="~/Content/img/HistoricProperties/image010.png">
 </p>
 
 <p>
@@ -306,7 +306,7 @@
     template for display. We’ll look at this in a little detail below, but just
     know that the display model is a dictionary whose key is the display icon you
     see in the rendered HTML below.<br>
-    <img src="/img/HistoricProperties/image011.png">
+    <img src="~/Content/img/HistoricProperties/image011.png">
 </p>
 
 <p>
@@ -319,7 +319,7 @@
     templates are indicated.
 </p>
 
-<p><img src="/img/HistoricProperties/image012.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image012.png"></p>
 
 <p>
     The <span class=CodeChar>UniqueNonEmptyStrings</span> method
@@ -331,7 +331,7 @@
     unique names connected with a listing.
 </p>
 
-<p><img src="/img/HistoricProperties/image013.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image013.png"></p>
 
 <p>
     The <span class=CodeChar>UniqueNonEmptyItems</span> method was
@@ -339,7 +339,7 @@
     that there are no duplicates displayed.
 </p>
 
-<p><img src="/img/HistoricProperties/image014.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image014.png"></p>
 
 <h2>Search Subscription</h2>
 
@@ -350,7 +350,7 @@
     and $400K. There’s a <b>Notify Me</b> button on the search page for this.
 </p>
 
-<p><img src="/img/HistoricProperties/image015.jpg"></p>
+<p><img src="~/Content/img/HistoricProperties/image015.jpg"></p>
 
 <p>Here’s how I approached this:</p>
 
@@ -362,7 +362,7 @@
     same class is used when doing searches interactively as a user normally would
     when using the site.<br>
 
-    <img src="/img/HistoricProperties/image016.png">
+    <img src="~/Content/img/HistoricProperties/image016.png">
 </p>
 
 <p>
@@ -372,7 +372,7 @@
     I considered using Azure web jobs, but I find cron-job.org much simpler for
     cases where all I want is a URL to be called on a schedule. This handles both
     the search execution and the emailing of results.<br>
-    <img src="/img/HistoricProperties/image017.png">
+    <img src="~/Content/img/HistoricProperties/image017.png">
 </p>
 
 <p>
@@ -380,7 +380,7 @@
     that have changed since the last set of notifications went out. For each
     listing, we look to see if it fits anyone’s saved search criteria:<br>
     <img border=0 width=815 height=149 id="Picture 22"
-         src="/img/HistoricProperties/image018.jpg">
+         src="~/Content/img/HistoricProperties/image018.jpg">
 </p>
 
 <p>
@@ -388,14 +388,14 @@
     like this. This method, given a listing id, queries all the active saved searches
     to see if it matches anyone’s search. If it does, it’s logged in the <span class=CodeChar>SearchResult</span> table. This is later picked up by the email
     process to render the search result email. <br>
-    <img src="/img/HistoricProperties/image019.jpg">
+    <img src="~/Content/img/HistoricProperties/image019.jpg">
 </p>
 
 <p>
     Finally, the <span class=CodeChar>SendNotificationsInner</span> method (from step 2
     above), handles the actual email sending. This uses its own MVC <span class=CodeChar>HtmlHelper</span> to render the email content, sending search
     results to each user who has results.<br>
-    <img src="/img/HistoricProperties/image020.jpg">
+    <img src="~/Content/img/HistoricProperties/image020.jpg">
 </p>
 
 <h2>Region Dropdown</h2>
@@ -410,7 +410,7 @@
     I’ll show you how I did it.
 </p>
 
-<p><img src="/img/HistoricProperties/image021.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image021.png"></p>
 
 <p>
     First, it helps to know that for most all dropdowns in the
@@ -429,7 +429,7 @@
     in a bit.
 </p>
 
-<p><img src="/img/HistoricProperties/image022.jpg"></p>
+<p><img src="~/Content/img/HistoricProperties/image022.jpg"></p>
 
 <p>
     The <span class=CodeChar>OnExecuted</span> override looks
@@ -441,7 +441,7 @@
     query overhead, and the states are not hardcoded into the region names.
 </p>
 
-<p><img src="/img/HistoricProperties/image023.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image023.png"></p>
 
 <h2>Facebook Sharing</h2>
 
@@ -451,7 +451,7 @@
 
 <p>
     <img border=0 width=344 height=158 id="Picture 28"
-         src="/img/HistoricProperties/image024.png">
+         src="~/Content/img/HistoricProperties/image024.png">
 </p>
 
 <p>
@@ -462,7 +462,7 @@
     meta tags. This is what these properties look like in my Razor view:
 </p>
 
-<p><img src="/img/HistoricProperties/image025.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image025.png"></p>
 
 <p>
     What was tricky here had to do with images. When sharing a
@@ -497,7 +497,7 @@
     dimensions won’t change, it’s efficient to store them in the database.
 </p>
 
-<p><img src="/img/HistoricProperties/image026.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image026.png"></p>
 
 <p>
     This method is called in two places – now as part of the
@@ -515,7 +515,7 @@
     storage
 </p>
 
-<p><img src="/img/HistoricProperties/image027.png"></p>
+<p><img src="~/Content/img/HistoricProperties/image027.png"></p>
 
 <h2>Processing Credit Cards</h2>
 

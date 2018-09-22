@@ -4,7 +4,7 @@
     "Name": "SQL Model Merge",
     "Type": 1,
     "Description": "Migrate code-first ORM model class changes to SQL Server and MySQL. Perform database structure diffs and merges.",
-    "LocalImage": "/img/content/sql-model-merge.png",
+    "LocalImage": "sql-model-merge.png",
     "NugetPackages": null,
     "PublicUrl": null,
     "PriceInfoUrl": null,
@@ -16,7 +16,7 @@
     "Name": "Postulate.Lite",
     "Type": 0,
     "Description": "Lightweight code-first ORM made with Dapper, targeting SQL Server and MySQL.",
-    "LocalImage": "/img/content/postulate.png",
+    "LocalImage": "postulate.png",
     "NugetPackages": [
       "Postulate.Lite.SqlServer",
       "Postulate.Lite.MySql"
@@ -45,7 +45,7 @@
     "Name": "Ginseng",
     "Type": 2,
     "Description": "Software project and task management for small teams, with GitHub integration.",
-    "LocalImage": "/img/content/ginseng.png",
+    "LocalImage": "ginseng.png",
     "NugetPackages": null,
     "PublicUrl": "https://ginseng6.azurewebsites.net/",
     "PriceInfoUrl": null,

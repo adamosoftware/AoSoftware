@@ -7,7 +7,8 @@ namespace AoSoftware.Controllers
 	{
 		public ActionResult Index()
 		{
-			return View();
+			var projects = GetProjects();
+			return View(projects);
 		}
 
 		public ActionResult About()

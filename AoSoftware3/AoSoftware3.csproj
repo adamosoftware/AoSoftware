@@ -173,9 +173,9 @@
     <Content Include="Content\css\theme.css" />
     <Content Include="Content\fonts\entypo.svg" />
     <Content Include="Content\fonts\socicon.svg" />
-    <Content Include="Content\img\content\ginseng.png" />
-    <Content Include="Content\img\content\postulate.png" />
-    <Content Include="Content\img\content\sql-model-merge.png" />
+    <Content Include="Content\img\Home\ginseng.png" />
+    <Content Include="Content\img\Home\postulate.png" />
+    <Content Include="Content\img\Home\sql-model-merge.png" />
     <Content Include="Content\img\graphic-bg-city.svg" />
     <Content Include="Content\img\graphic-bg-clouds-white.svg" />
     <Content Include="Content\img\graphic-bike.svg" />
