@@ -366,8 +366,7 @@
 </p>
 
 <p>
-    I
-    created an MVC action <span class=CodeChar>Search/RunAndSendNotifications</span>
+    I created an MVC action <span class=CodeChar>Search/RunAndSendNotifications</span>
     that is scheduled to run daily by <a href="https://cron-job.org/en/">cron-job.org</a>.
     I considered using Azure web jobs, but I find cron-job.org much simpler for
     cases where all I want is a URL to be called on a schedule. This handles both
@@ -387,7 +386,7 @@
     The search execution and queuing for email send is handled by a static method <span class=CodeChar>SearchCriteria.ExecuteSubscribedSearches</span>, which looks
     like this. This method, given a listing id, queries all the active saved searches
     to see if it matches anyone’s search. If it does, it’s logged in the <span class=CodeChar>SearchResult</span> table. This is later picked up by the email
-    process to render the search result email. <br>
+    process to render the search result email. Dynamic criteria is provided by <a href="https://github.com/adamosoftware/Postulate.Orm/blob/master/Core/Util/QueryUtil.cs#L111">Postulate's GetWhereClause method</a>.<br>
     <img src="~/Content/img/HistoricProperties/image019.jpg">
 </p>
 
