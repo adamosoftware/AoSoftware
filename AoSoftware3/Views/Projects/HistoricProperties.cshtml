@@ -237,6 +237,30 @@
 
 <p><img src="~/Content/img/HistoricProperties/image008.png"></p>
 
+<h2>Queries and Inline SQL</h2>
+
+<p>
+    I'll have more to say about inline SQL in my post on Postulate, but it's worth touching on this briefly here.
+    Most anytime I need a query, I will create a <a href="https://github.com/adamosoftware/Postulate.Orm/blob/master/Core/Query.cs">Query&lt;T&gt;</a> class in a dedicated Queries/ folder.
+    Here's an example that demonstrates parameter properties and injection-proof sort options. Read more about the Postulate Query class <a href="https://github.com/adamosoftware/Postulate.Orm/wiki/Using-the-Query-class">here</a>.
+</p>
+
+<p><img src="~/Content/img/HistoricProperties/query_agency.png"/></p>
+
+<p>Here's another example that uses dynamic criteria with [Where] and [Case] attributes. Note the <strong>{where}</strong> token where dynamic criteria is inserted in the SQL at runtime.</p>
+
+<p><img src="~/Content/img/HistoricProperties/query_users.png"/></p>
+
+<p>Approaching queries this way gives me the comfort and power of inline SQL without cluttering MVC controller code with it.
+    All queries are always injection proof, by leveraging <a href="https://www.nuget.org/packages/Dapper/">Dapper</a> to map parameters to object properties.
+    For dynamic ORDER BY clauses, I use a dictionary to map defined sort options to a key. This way, the ORDER BY is never concatenated from user input.
+    Calling queries in a controller looks like this:</p>
+
+<p><img src="~/Content/img/HistoricProperties/query_usage.png"/></p>
+
+<p>Note that SelectLists are filled using a Query&lt;T&gt; sublcass <a href="https://github.com/adamosoftware/Postulate.Mvc/blob/master/Postulate.Mvc/SelectListQuery.cs">SelectListQuery</a>. Thus,
+    they work the same way in effect as other queries, but are specifically intended for SelectList usage.</p>
+
 <h1>Feature Highlights</h1>
 
 <h2><a name="_Contact_Info"></a>Contact Info</h2>
