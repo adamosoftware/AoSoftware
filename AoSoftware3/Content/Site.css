@@ -22,3 +22,8 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Fix navbar links z-index */
+.nav-container .position-fixed {
+    z-index: 1021;
+}
